@@ -1,0 +1,36 @@
+import org.telegram.telegrambots.meta.api.objects.PhotoSize;
+
+photo=[
+    PhotoSize(
+        fileId=AgACAgIAAxkBAAIEoWfDt5gS535uMsHgdQPK_b6DxyL7AAId8TEbXvohShyF9I59wjA-AQADAgADcwADNgQ,
+        fileUniqueId=AQADHfExG176IUp4,
+        width=90,
+        height=48,
+        fileSize=1344,
+        filePath=null),
+
+     
+    PhotoSize(
+        fileId=AgACAgIAAxkBAAIEoWfDt5gS535uMsHgdQPK_b6DxyL7AAId8TEbXvohShyF9I59wjA-AQADAgADbQADNgQ,
+        fileUniqueId=AQADHfExG176IUpy,
+        width=320,
+        height=172,
+        fileSize=21188,
+        filePath=null),
+    
+    PhotoSize(
+        fileId=AgACAgIAAxkBAAIEoWfDt5gS535uMsHgdQPK_b6DxyL7AAId8TEbXvohShyF9I59wjA-AQADAgADeAADNgQ,
+        fileUniqueId=AQADHfExG176IUp9,
+        width=800,
+        height=429,
+        fileSize=101078,
+        filePath=null),
+    
+    PhotoSize(
+        fileId=AgACAgIAAxkBAAIEoWfDt5gS535uMsHgdQPK_b6DxyL7AAId8TEbXvohShyF9I59wjA-AQADAgADeQADNgQ,
+        fileUniqueId=AQADHfExG176IUp-,
+        width=1280,
+        height=686,
+        fileSize=194972,
+        filePath=null)
+]

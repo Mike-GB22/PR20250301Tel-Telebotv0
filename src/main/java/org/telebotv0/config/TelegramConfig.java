@@ -22,6 +22,9 @@ public class TelegramConfig {
     @Value("${secrets.telegram.token:NOT_FOUND}")
     private String token;
 
+    @Value("${config.telegram.send_duplicate_to_owner:false}")
+    private boolean sendDuplicateToOwner;
+
     @Bean
     public TelegramBotsApi telegramBotsApi(Bot bot) throws TelegramApiException {
         TelegramBotsApi tba = new TelegramBotsApi(DefaultBotSession.class);

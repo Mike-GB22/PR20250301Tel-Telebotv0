@@ -62,7 +62,9 @@ public class Bot extends TelegramLongPollingBot {
         log.info("\n(i) -> Answer will send: {}\n", answer);
 
         sendAnswer(getOwnerId(), answer);
-        sendAnswer(update.getMessage().getChatId().toString(), answer);
+        if (telegramConfig.isSendDuplicateToOwner()) {
+            sendAnswer(update.getMessage().getChatId().toString(), answer);
+        }
     }
 
     private void sendAnswer(String chatId, String answer) {
