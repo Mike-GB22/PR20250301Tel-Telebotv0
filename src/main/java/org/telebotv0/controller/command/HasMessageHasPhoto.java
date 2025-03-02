@@ -29,14 +29,12 @@ public class HasMessageHasPhoto implements Command {
         StringBuilder info = new StringBuilder(CAPTION)
                 .append("\n - photoSize.size(): ").append(photoSizes.size())
                 ;
-        Set<String> fileIds = new HashSet<>();
         boolean flagAllFileIdIsTheSame = true;
         String previousFileId = null;
         for (int i = 0; i < photoSizes.size(); i++) {
             PhotoSize photo = photoSizes.get(i);
 
             String fileId = photo.getFileId();
-            fileIds.add(fileId);
             if (previousFileId != null && !previousFileId.equals(fileId)) {
                 flagAllFileIdIsTheSame = false;
             } else {
@@ -51,9 +49,11 @@ public class HasMessageHasPhoto implements Command {
                     .append("\nfilePath: ").append(photo.getFilePath())
                     .append("\n");;
         }
-        info.append(" = All photoSize has the same fileId: ").append(flagAllFileIdIsTheSame)
-                .append(fileIds);
 
+        info.append(" = All photoSize has the same fileId: ").append(flagAllFileIdIsTheSame);
+        if (flagAllFileIdIsTheSame) {
+            info.append(previousFileId);
+        }
         return info.toString();
     }
 }
