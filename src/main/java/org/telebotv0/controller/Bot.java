@@ -1,6 +1,7 @@
 package org.telebotv0.controller;
 
 import jakarta.annotation.PostConstruct;
+import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import org.telebotv0.config.TelegramConfig;
@@ -10,8 +11,10 @@ import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -20,6 +23,9 @@ public class Bot extends TelegramLongPollingBot {
 
     private final TelegramConfig telegramConfig;
     private final List<Command> commands;
+
+    @Getter
+    private final Set<Long> clientIds = new HashSet<>();
 
     public Bot(TelegramConfig telegramConfig, List<Command> commands) {
         super(telegramConfig.getToken());
@@ -38,6 +44,8 @@ public class Bot extends TelegramLongPollingBot {
                 .collect(Collectors.joining("\n")));
 
         answerOpt.ifPresent(answer -> sendAnswerAndDuplicateToOwner(update, answer));
+
+        registerClientId(update);
     }
 
     @Override
@@ -52,6 +60,11 @@ public class Bot extends TelegramLongPollingBot {
     @PostConstruct
     public void printInfo() {
         log.info("\n(i) -> Telegram bot name is: {},\n(i) -> Owner ID is: {}\n", getBotUsername(), getOwnerId());
+    }
+
+    private void registerClientId(Update update) {
+        Optional<Long> clientId = Optional.of(update.getMessage().getChatId());
+        clientId.ifPresent(clientIds::add);
     }
 
     private void sendAnswerAndDuplicateToOwner(Update update, String answer) {

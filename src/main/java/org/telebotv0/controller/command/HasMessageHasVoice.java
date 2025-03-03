@@ -3,6 +3,7 @@ package org.telebotv0.controller.command;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
+import org.telebotv0.config.TelegramConfig;
 import org.telebotv0.controller.Bot;
 import org.telegram.telegrambots.meta.api.methods.GetFile;
 import org.telegram.telegrambots.meta.api.objects.File;
@@ -20,7 +21,8 @@ import java.util.List;
 public class HasMessageHasVoice implements Command {
 
     private static final String CAPTION = "*Update has Message. Message has Voice*";
-    private Bot bot;
+    private final TelegramConfig telegramConfig;
+
 
     @Override
     public boolean isApplicable(Update update) {
@@ -35,27 +37,27 @@ public class HasMessageHasVoice implements Command {
 
         StringBuilder info = new StringBuilder(CAPTION);
         Voice recievedVoice = update.getMessage().getVoice();
-
-        System.out.println("recievedVoice: " + recievedVoice);
         String fileId = recievedVoice.getFileId();
-        System.out.println("fileId: " + fileId);
         GetFile getVoiceFileRequest = new GetFile();
         getVoiceFileRequest.setFileId(fileId);
 
+        info.append("\n = receivedVoice: `").append(recievedVoice).append("`")
+                .append("\n = fileId: `").append(fileId).append("`");
+
         java.io.File audioFile;
         try {
-            File voiceTeleFile = bot.execute(getVoiceFileRequest);
-            System.out.println("File: " + voiceTeleFile);
-            //System.out.println("FileURL: " + voiceTeleFile.getFileUrl(token));
-            System.out.println("FilePath: " + voiceTeleFile.getFilePath());
+            File voiceTeleFile = telegramConfig.getBot().execute(getVoiceFileRequest);
+            info.append("\n = org.telegram.telegrambots.meta.api.objects.File: `").append(voiceTeleFile).append("`")
+                    //.append("\n = FileURL: `").append(voiceTeleFile.getFileUrl(token)).append("`")
+                    .append("\n = FilePath: `").append(voiceTeleFile.getFilePath()).append("`");
 
-            audioFile = bot.downloadFile(voiceTeleFile.getFilePath());
-            System.out.println("audioFile: " + audioFile);
-            System.out.println("audioFile.getAbsolutePath(): " + audioFile.getAbsolutePath());
-            System.out.println("audioFile.getAbsoluteFile(): " + audioFile.getAbsoluteFile());
-            System.out.println("audioFile.toURI(): " + audioFile.toURI());
-            System.out.println("audioFile.getCanonicalPath(): " + audioFile.getCanonicalPath());
-            System.out.println("audioFile.getName(): " + audioFile.getName());
+            audioFile =  telegramConfig.getBot().downloadFile(voiceTeleFile.getFilePath());
+            info.append("\n - java.io.File:").append("\n = audioFile: `").append(audioFile).append("`")
+                    .append("\n = audioFile.getAbsolutePath(): `").append(audioFile.getAbsolutePath()).append("`")
+                    .append("\n = audioFile.getAbsoluteFile(): `").append(audioFile.getAbsoluteFile()).append("`")
+                    .append("\n = audioFile.toURI(): `").append(audioFile.toURI()).append("`")
+                    .append("\n = audioFile.getCanonicalPath(): `").append(audioFile.getCanonicalPath()).append("`")
+                    .append("\n = audioFile.getName(): `").append(audioFile.getName()).append("`");
 
         } catch (TelegramApiException e) {
             log.error("Voice. Get and Download file. \n{}\nStack: {}", e.getMessage(), e.getStackTrace());
