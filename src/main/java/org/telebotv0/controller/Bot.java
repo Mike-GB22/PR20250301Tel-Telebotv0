@@ -6,10 +6,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import org.telebotv0.config.TelegramConfig;
 import org.telebotv0.controller.command.Command;
+import org.telebotv0.service.SendService;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
-import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Update;
-import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
 import java.util.HashSet;
 import java.util.List;
@@ -22,14 +21,16 @@ import java.util.stream.Collectors;
 public class Bot extends TelegramLongPollingBot {
 
     private final TelegramConfig telegramConfig;
+    private final SendService sendService;
     private final List<Command> commands;
 
     @Getter
     private final Set<Long> clientIds = new HashSet<>();
 
-    public Bot(TelegramConfig telegramConfig, List<Command> commands) {
+    public Bot(TelegramConfig telegramConfig, List<Command> commands, SendService sendService) {
         super(telegramConfig.getToken());
         this.telegramConfig = telegramConfig;
+        this.sendService = sendService;
         this.commands = commands;
     }
 
@@ -43,7 +44,7 @@ public class Bot extends TelegramLongPollingBot {
                 .map(c -> c.process(update))
                 .collect(Collectors.joining("\n")));
 
-        answerOpt.ifPresent(answer -> sendAnswerAndDuplicateToOwner(update, answer));
+        answerOpt.ifPresent(answer -> sendService.sendAnswerAndDuplicateToOwner(update, answer));
 
         registerClientId(update);
     }
@@ -65,30 +66,5 @@ public class Bot extends TelegramLongPollingBot {
     private void registerClientId(Update update) {
         Optional<Long> clientId = Optional.of(update.getMessage().getChatId());
         clientId.ifPresent(clientIds::add);
-    }
-
-    private void sendAnswerAndDuplicateToOwner(Update update, String answer) {
-        if (answer.isBlank()) {
-            log.info("\n(i) -> Answer will NOT send, because the message is empty. {}\n", answer);
-            return;
-        }
-        log.info("\n(i) -> Answer will send: {}\n", answer);
-
-        sendAnswer(getOwnerId(), answer);
-        if (telegramConfig.isSendDuplicateToOwner()) {
-            sendAnswer(update.getMessage().getChatId().toString(), answer);
-        }
-    }
-
-    private void sendAnswer(String chatId, String answer) {
-        SendMessage sendMessage = new SendMessage();
-        sendMessage.enableMarkdown(true);
-        sendMessage.setText(answer);
-        sendMessage.setChatId(chatId);
-        try {
-            this.execute(sendMessage);
-        } catch (TelegramApiException e) {
-            log.error("SendAnswer -> SendMessage -> Bot.execute(): {},\nStack: {}", e.getMessage(), e.getStackTrace());
-        }
     }
 }
