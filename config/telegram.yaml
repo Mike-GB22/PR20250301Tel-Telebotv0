@@ -1,0 +1,4 @@
+config:
+  telegram:
+    send_duplicate_to_owner: false
+    file_download_pattern: http://localhost:8080/telegram/download/%s

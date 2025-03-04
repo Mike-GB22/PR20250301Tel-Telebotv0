@@ -28,6 +28,9 @@ public class TelegramConfig {
     @Value("${config.telegram.send_duplicate_to_owner:false}")
     private boolean sendDuplicateToOwner;
 
+    @Value("${config.telegram.file_download_pattern:'http://localhost:8080/download/%s'}")
+    private String fileDownloadPattern;
+
     @Bean
     public TelegramBotsApi telegramBotsApi(Bot bot) throws TelegramApiException {
         TelegramBotsApi tba = new TelegramBotsApi(DefaultBotSession.class);

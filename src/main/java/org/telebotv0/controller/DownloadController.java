@@ -37,7 +37,7 @@ public class DownloadController {
                     , headers
                     , HttpStatus.OK);
         } catch (TelegramApiException | IOException e) {
-            log.error("File download as Stream error: {},\nStack: {}", e.getMessage(), e.getStackTrace());
+            log.error("File download as Stream error ({}): {},\nStack: {}", e.getClass(), e.getMessage(), e.getStackTrace());
             if (e instanceof TelegramApiException) {
                 return new ResponseEntity<>(HttpStatus.NOT_FOUND);
             } else {

@@ -11,7 +11,7 @@ import java.util.Set;
 
 @Component
 public class HasMessageHasPhoto implements Command {
-    private static final String CAPTION = "*Update has Message. Message has Photo.*";
+    private static final String CAPTION = "Update has Message. Message has *Photo.*";
 
     @Override
     public boolean isApplicable(Update update) {

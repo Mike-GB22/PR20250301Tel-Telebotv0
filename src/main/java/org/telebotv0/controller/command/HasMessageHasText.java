@@ -16,6 +16,6 @@ public class HasMessageHasText implements Command {
             return "Вызов не к месту.";
         }
 
-        return "Update has Message. Message has Text";
+        return "Update has Message. Message has *Text*";
     }
 }
