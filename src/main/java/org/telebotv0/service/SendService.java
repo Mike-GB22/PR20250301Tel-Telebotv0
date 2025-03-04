@@ -16,19 +16,23 @@ public class SendService {
     private final TelegramConfig telegramConfig;
 
     public void sendAnswerAndDuplicateToOwner(Update update, String answer) {
+        sendAnswerAndDuplicateToOwner(update.getMessage().getChatId().toString(), answer);
+    }
+
+    public void sendAnswerAndDuplicateToOwner(String  chatId, String answer) {
         if (answer.isBlank()) {
             log.info("\n(i) -> Answer will NOT send, because the message is empty. {}\n", answer);
             return;
         }
         log.info("\n(i) -> Answer will send: {}\n", answer);
 
-        sendAnswer(telegramConfig.getOwnerId(), answer);
         if (telegramConfig.isSendDuplicateToOwner()) {
-            sendAnswer(update.getMessage().getChatId().toString(), answer);
+            sendAnswer(telegramConfig.getOwnerId(), answer);
         }
+        sendAnswer(chatId, answer);
     }
 
-    private void sendAnswer(String chatId, String answer) {
+    private void sendAnswer(String  chatId, String answer) {
         SendMessage sendMessage = new SendMessage();
         sendMessage.enableMarkdown(true);
         sendMessage.setText(answer);
